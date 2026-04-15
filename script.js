@@ -84,18 +84,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Contact form handling — saves submissions as markdown to GitHub repo
-const _tp = [
-    'R21oWkY1MXlpMFFFWVNCQUExMV90YXBfYnVodGln',
-    'Tk5paTE4UjV1VXVoZ0h0cURZekpBdU9XdFdfQW5z',
-    'eHl4SVlkM3NXSTNIQ1dIVFRiRm1QUDlMWVQzQmlRSzNH'
-];
-function _gt() {
-    return _tp.map(function(p) {
-        return atob(p).split('').reverse().join('');
-    }).join('');
-}
-const GITHUB_REPO = 'jmccartan/CVSiteContactMeSubmissions';
+// Contact form handling — saves submissions to Google Sheets
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0zyULV6kjEmacxk5OzWkyjtDxUNWTBsvFARpmzYVOSy6ISukjzxQLekVEtlJX53Y/exec';
 
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
@@ -110,49 +100,25 @@ if (contactForm) {
         const formData = new FormData(contactForm);
         const data = Object.fromEntries(formData.entries());
         const now = new Date();
-        const timestamp = now.toISOString();
         const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        const markdown = [
-            `# Contact Form Submission`,
-            ``,
-            `**Date:** ${dateStr}`,
-            `**Name:** ${data.name}`,
-            `**Email:** ${data.email}`,
-            data.company ? `**Company:** ${data.company}` : null,
-            `**Subject:** ${data.subject}`,
-            ``,
-            `## Message`,
-            ``,
-            data.message,
-            ``,
-            `---`,
-            `*Submitted via johnmccartan.com at ${timestamp}*`
-        ].filter(Boolean).join('\n');
-
-        const filename = `contact-${data.name.replace(/\s+/g, '-').toLowerCase()}-${now.toISOString().replace(/[:.]/g, '-')}.md`;
-        const path = `submissions/${filename}`;
-
         try {
-            const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${_gt()}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    message: `New contact submission from ${data.name}`,
-                    content: btoa(unescape(encodeURIComponent(markdown)))
+                    name: data.name,
+                    email: data.email,
+                    company: data.company || '',
+                    subject: data.subject,
+                    message: data.message,
+                    date: dateStr
                 })
             });
 
-            if (response.ok) {
-                contactForm.style.display = 'none';
-                document.getElementById('formSuccess').style.display = 'block';
-            } else {
-                alert('There was a problem submitting your message. Please try again.');
-            }
+            contactForm.style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
         } catch (err) {
             alert('There was a problem submitting your message. Please try again.');
         }

@@ -85,7 +85,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Contact form handling — saves submissions as markdown to GitHub repo
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const GITHUB_REPO = 'jmccartan/CVSiteContactMeSubmissions';
 
 const contactForm = document.getElementById('contactForm');
@@ -122,7 +122,7 @@ if (contactForm) {
         ].filter(Boolean).join('\n');
 
         const filename = `contact-${data.name.replace(/\s+/g, '-').toLowerCase()}-${now.toISOString().replace(/[:.]/g, '-')}.md`;
-        const path = `contactme/${filename}`;
+        const path = `submissions/${filename}`;
 
         try {
             const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {

@@ -84,7 +84,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Contact form handling
+// Contact form handling — saves submissions as markdown to GitHub repo
+const GITHUB_TOKEN = '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';
+const GITHUB_REPO = 'jmccartan/CVSiteContactMeSubmissions';
+
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', async function (e) {
@@ -101,7 +104,6 @@ if (contactForm) {
         const timestamp = now.toISOString();
         const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        // Generate markdown content
         const markdown = [
             `# Contact Form Submission`,
             ``,
@@ -119,35 +121,31 @@ if (contactForm) {
             `*Submitted via johnmccartan.com at ${timestamp}*`
         ].filter(Boolean).join('\n');
 
-        // Save markdown file locally
-        const blob = new Blob([markdown], { type: 'text/markdown' });
-        const filename = `contact-${data.name.replace(/\s+/g, '-').toLowerCase()}-${now.toISOString().slice(0, 10)}.md`;
-        const downloadLink = document.createElement('a');
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = filename;
-        downloadLink.click();
-        URL.revokeObjectURL(downloadLink.href);
+        const filename = `contact-${data.name.replace(/\s+/g, '-').toLowerCase()}-${now.toISOString().replace(/[:.]/g, '-')}.md`;
+        const path = `contactme/${filename}`;
 
-        // Submit to Formspree (sends email in background)
         try {
-            const response = await fetch(contactForm.action, {
-                method: 'POST',
-                body: formData,
-                headers: { 'Accept': 'application/json' }
+            const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: `New contact submission from ${data.name}`,
+                    content: btoa(unescape(encodeURIComponent(markdown)))
+                })
             });
 
             if (response.ok) {
                 contactForm.style.display = 'none';
                 document.getElementById('formSuccess').style.display = 'block';
             } else {
-                // Form still "worked" — markdown was saved
-                contactForm.style.display = 'none';
-                document.getElementById('formSuccess').style.display = 'block';
+                alert('There was a problem submitting your message. Please try again.');
             }
         } catch (err) {
-            // Offline or Formspree not configured — markdown was still saved
-            contactForm.style.display = 'none';
-            document.getElementById('formSuccess').style.display = 'block';
+            alert('There was a problem submitting your message. Please try again.');
         }
 
         submitBtn.innerHTML = originalText;

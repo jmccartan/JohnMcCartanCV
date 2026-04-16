@@ -359,7 +359,7 @@ ul {
 }
 
 .ai-callout-image img {
-    width: 180px;
+    width: 260px;
     height: auto;
     border-radius: var(--radius-lg);
     opacity: 0.9;

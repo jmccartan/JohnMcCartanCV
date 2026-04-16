@@ -87,6 +87,20 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Contact form handling — saves submissions to Google Sheets
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0zyULV6kjEmacxk5OzWkyjtDxUNWTBsvFARpmzYVOSy6ISukjzxQLekVEtlJX53Y/exec';
 
+// Email validation on blur
+const emailInput = document.getElementById('email');
+if (emailInput) {
+    emailInput.addEventListener('blur', function () {
+        const email = emailInput.value.trim();
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailInput.setCustomValidity('Please enter a valid email address.');
+            emailInput.reportValidity();
+        } else {
+            emailInput.setCustomValidity('');
+        }
+    });
+}
+
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', async function (e) {

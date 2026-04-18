@@ -350,7 +350,7 @@ ul {
 
 .ai-callout-layout {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 40px;
 }
 
@@ -626,6 +626,50 @@ ul {
     font-size: 0.8rem;
     color: var(--color-text-light);
     margin-top: 8px;
+}
+
+/* ===== Skills — Collapsible Details ===== */
+.skills-details {
+    margin-top: 8px;
+}
+
+.skills-details summary.skills-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    padding: 10px 20px;
+    border: 1px solid var(--color-primary);
+    border-radius: 50px;
+    background: transparent;
+    transition: all var(--transition);
+    list-style: none;
+    user-select: none;
+}
+
+.skills-details summary.skills-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.skills-details summary.skills-toggle::after {
+    content: '▸';
+    transition: transform 0.25s ease;
+}
+
+.skills-details[open] summary.skills-toggle::after {
+    transform: rotate(90deg);
+}
+
+.skills-details summary.skills-toggle:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.skills-details .skills-grid {
+    margin-top: 24px;
 }
 
 /* ===== Skills ===== */

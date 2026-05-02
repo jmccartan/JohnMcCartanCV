@@ -547,19 +547,23 @@ ul {
 }
 
 .ai-callout-eyebrow {
-    font-size: 0.78rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.24em;
     color: var(--color-accent-light);
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
 .ai-callout-title {
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    line-height: 1.2;
-    color: white;
+    font-family: var(--font-body);
+    font-size: 1.55rem;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.005em;
     margin: 0;
 }
 
@@ -570,7 +574,7 @@ ul {
 
 .ai-callout-layout {
     display: grid;
-    grid-template-columns: 1.3fr 1fr;
+    grid-template-columns: 1fr 1fr;
     align-items: stretch;
     gap: 40px;
 }
@@ -580,7 +584,7 @@ ul {
     overflow: hidden;
     border-radius: var(--radius-lg);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    min-height: 280px;
+    min-height: 380px;
 }
 
 .ai-callout-image img {
@@ -1324,12 +1328,12 @@ ul {
     }
 
     .ai-callout-title {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 
     .ai-callout-image {
-        min-height: 200px;
-        max-height: 280px;
+        min-height: 240px;
+        max-height: 320px;
     }
 
     .ai-callout-image img {
